@@ -42,7 +42,8 @@ class Actor(object):
         self.s = tf.placeholder(tf.float32, [1, n_features], "state")
         self.a = tf.placeholder(tf.int32, None, "act")
         self.td_error = tf.placeholder(tf.float32, None, "td_error")  # TD_error
-
+        
+        # 建立actor神经网络
         with tf.variable_scope('Actor'):
             l1 = tf.layers.dense(
                 inputs=self.s,
@@ -88,7 +89,8 @@ class Critic(object):
         self.s = tf.placeholder(tf.float32, [1, n_features], "state")
         self.v_ = tf.placeholder(tf.float32, [1, 1], "v_next")
         self.r = tf.placeholder(tf.float32, None, 'r')
-
+        
+        # 创建critic网络
         with tf.variable_scope('Critic'):
             l1 = tf.layers.dense(
                 inputs=self.s,
@@ -114,7 +116,7 @@ class Critic(object):
             self.td_error = self.r + GAMMA * self.v_ - self.v
             self.loss = tf.square(self.td_error)    # TD_error = (r+gamma*V_next) - V_eval
         with tf.variable_scope('train'):
-            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)  # 误差的反向传递
 
     def learn(self, s, r, s_):
         s, s_ = s[np.newaxis, :], s_[np.newaxis, :]
